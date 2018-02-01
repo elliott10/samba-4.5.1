@@ -1,11 +1,12 @@
 #!/bin/bash
 CWD=$(pwd)
 
-NDK=$ANDROID_SDK/ndk-bundle
+#NDK=$ANDROID_SDK/ndk-bundle
+NDK="/home/os/Downloads/android-ndk-r14b"
 
 HOST=linux-x86_64
 
-ANDROID_VER=23
+ANDROID_VER=22
 TOOLCHAIN_VER=4.9
 
 TOOLCHAIN=$CWD/bin/ndk/toolchain
@@ -20,9 +21,9 @@ TOOLCHAIN=$CWD/bin/ndk/toolchain
 #LINKER_FLAG="-march=armv7-a -Wl,--fix-cortex-a8"
 
 # Flags for 64-bit ARM v8
-ABI=aarch64-linux-android
-PLATFORM_ARCH=arm64
-TRIPLE=aarch64-linux-android
+#ABI=aarch64-linux-android
+#PLATFORM_ARCH=arm64
+#TRIPLE=aarch64-linux-android
 
 # Flags for x86
 #ABI=x86
@@ -30,9 +31,9 @@ TRIPLE=aarch64-linux-android
 #TRIPLE=i686-linux-android
 
 # Flags for x86_64
-#ABI=x86_64
-#PLATFORM_ARCH=x86_64
-#TRIPLE=x86_64-linux-android
+ABI=x86_64
+PLATFORM_ARCH=x86_64
+TRIPLE=x86_64-linux-android
 
 export CC="$CWD/cc_shim.py $TOOLCHAIN/bin/clang"
 export AR=$TOOLCHAIN/$TRIPLE-ar
@@ -51,4 +52,12 @@ $NDK/build/tools/make_standalone_toolchain.py --arch $PLATFORM_ARCH --api $ANDRO
 
 # Configure Samba build
 echo "Configuring Samba..."
-$CWD/configure --hostcc=$(which gcc) --without-ads --without-ldap --without-acl-support --without-ad-dc --cross-compile --cross-answers=build_answers --prefix=$CWD/out
+RUNTIME_DIR=/data/data/samba
+$CWD/configure --hostcc=$(which gcc) --without-ads --without-ldap --without-acl-support --without-ad-dc --cross-compile --cross-answers=build_answers --prefix=$RUNTIME_DIR \
+--enable-developer --enable-debug \
+--with-static-modules=ALL \
+--builtin-libraries=replace,ccan,samba-cluster-support,smbconf,smbregistry,secrets3 \
+--bundled-libraries=talloc,tdb,pytdb,ldb,pyldb,tevent,pytevent \
+--without-quotas \
+--without-utmp \
+

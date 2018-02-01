@@ -927,10 +927,10 @@ void rep_setproctitle(const char *fmt, ...)
 
 #ifndef HAVE_SWAB
 void rep_swab(const void *from, void *to, ssize_t n) {
+  ssize_t i;
   if (n <= 0)
     return;
 
-  ssize_t i;
   n >>= 1;
   for (i = 0; i < n; ++i) {
     uint16_t src = *((uint16_t*)from+i);
