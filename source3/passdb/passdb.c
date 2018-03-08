@@ -147,6 +147,7 @@ static NTSTATUS samu_set_unix_internal(struct pdb_methods *methods,
 
 	fullname = NULL;
 
+	if (pwd->pw_gecos)
 	if (count_commas(pwd->pw_gecos) == 3) {
 		/*
 		 * Heuristic: This seems to be a gecos field that has been

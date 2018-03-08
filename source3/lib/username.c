@@ -157,6 +157,8 @@ static struct passwd *Get_Pwnam_internals(TALLOC_CTX *mem_ctx,
 done:
 	DEBUG(5,("Get_Pwnam_internals %s find user [%s]!\n",ret ?
 		 "did":"didn't", user));
+	if(ret)
+		DEBUG(5,("Get struct passwd:[%s:%s:%d:%d:%s:%s:%s]\n",ret->pw_name,ret->pw_passwd,ret->pw_uid,ret->pw_gid,ret->pw_gecos,ret->pw_dir,ret->pw_shell));
 
 	return ret;
 }

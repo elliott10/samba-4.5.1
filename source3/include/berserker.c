@@ -58,15 +58,15 @@ struct passwd * getpasswd_wrapper_impl(const char* name)
     ptmp->pw_name = SMB_MALLOC_ARRAY(char, len + 1);
     fstrcpy(ptmp->pw_name, name);
     //ptmp->pw_passwd = (char *) malloc(strlen("*") + 1);
-    ptmp->pw_passwd = SMB_MALLOC_ARRAY(char, strlen("*") + 1);
-    fstrcpy(ptmp->pw_passwd, "*");
+    ptmp->pw_passwd = SMB_MALLOC_ARRAY(char, strlen("x") + 1);
+    fstrcpy(ptmp->pw_passwd, "x");
     ptmp->pw_uid = 0;
     ptmp->pw_gid = 0;
 	//ptmp->pw_gecos = (char *) malloc(len + 1);
 	ptmp->pw_gecos = SMB_MALLOC_ARRAY(char, len + 1);
 	fstrcpy(ptmp->pw_gecos, name);
-    ptmp->pw_dir = "/data/local";
-    ptmp->pw_shell = "/system/xbin/sh";
+    ptmp->pw_dir = "/data";
+    ptmp->pw_shell = "/bin/sh";
     
 	return ptmp;
 }
@@ -80,12 +80,12 @@ struct passwd * getpasswd_wrapper()
 		//struct passwd *ptmp = (struct passwd *) malloc(sizeof(struct passwd));
 		struct passwd *ptmp = SMB_MALLOC_ARRAY(struct passwd, sizeof(struct passwd));
 		ptmp->pw_name = "root";
-		ptmp->pw_passwd = "*";
+		ptmp->pw_passwd = "x";
 		ptmp->pw_uid = 0;
 		ptmp->pw_gid = 0;
 		ptmp->pw_gecos = "root";
-		ptmp->pw_dir = "/data/local";
-		ptmp->pw_shell = "/system/xbin/sh";
+		ptmp->pw_dir = "/data";
+		ptmp->pw_shell = "/bin/sh";
 		
 		g_root_passwd = ptmp;
 	}
@@ -133,13 +133,18 @@ void swab(const void *from, void *to, ssize_t n)
 		*((uint16_t*)to+i) = ___constant_swab16(*((uint16_t*)from+i));
 }
 
+struct DIR {
+	  int fd_;
+};
+
 long telldir(DIR *dir)
 {
 	log_message(ANDROID_LOG_INFO, "telldir called");
-	return 0;
+	return (long) lseek(dir->fd_, 0, SEEK_CUR);
 }
 
 void seekdir(DIR *dir, long ofs)
 {
 	log_message(ANDROID_LOG_INFO, "seekdir called");
+	(void) lseek(dir->fd_, ofs, SEEK_SET);
 }

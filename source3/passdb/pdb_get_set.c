@@ -566,8 +566,7 @@ bool pdb_set_group_sid(struct samu *sampass, const struct dom_sid *g_sid, enum p
 bool pdb_set_username(struct samu *sampass, const char *username, enum pdb_value_state flag)
 {
 	if (username) { 
-		DEBUG(10, ("pdb_set_username: setting username %s, was %s\n", username,
-			(sampass->username)?(sampass->username):"NULL"));
+		DEBUG(10, ("pdb_set_username: setting username %s \n", username));
 
 		sampass->username = talloc_strdup(sampass, username);
 

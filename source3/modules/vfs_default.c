@@ -452,11 +452,15 @@ static NTSTATUS vfswrap_readdir_attr(struct vfs_handle_struct *handle,
 	return NT_STATUS_NOT_SUPPORTED;
 }
 
+struct DIR {
+	  int fd_;
+};
+
 static void vfswrap_seekdir(vfs_handle_struct *handle, DIR *dirp, long offset)
 {
 	START_PROFILE(syscall_seekdir);
-	//seekdir(dirp, offset);
-	DEBUG(0, ("seekdir() called, but it's invalid!\n"));
+	(void) lseek(dirp->fd_, offset, SEEK_SET);
+	DEBUG(0, ("seekdir() called!\n"));
 	END_PROFILE(syscall_seekdir);
 }
 
@@ -464,9 +468,8 @@ static long vfswrap_telldir(vfs_handle_struct *handle, DIR *dirp)
 {
 	long result;
 	START_PROFILE(syscall_telldir);
-	//result = telldir(dirp);
-	result = -1;
-	DEBUG(0, ("telldir() called, but it's invalid!\n"));
+	result = (long) lseek(dirp->fd_, 0, SEEK_CUR);
+	DEBUG(0, ("telldir() called!\n"));
 	END_PROFILE(syscall_telldir);
 	return result;
 }
