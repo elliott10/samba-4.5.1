@@ -102,7 +102,7 @@ static int talloc_pop(TALLOC_CTX *frame)
 			  talloc_get_name(frame),
 			  talloc_get_name(ts->talloc_stack
 					  [ts->talloc_stacksize-1])));
-#ifdef DEVELOPER
+#ifdef 0
 		smb_panic("Frame not freed in order.");
 #endif
 	}

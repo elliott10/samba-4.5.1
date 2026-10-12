@@ -679,9 +679,14 @@ static int net_usershare_add(struct net_context *c, int argc, const char **argv)
 			us_path = argv[1];
 			us_comment = argv[2];
 			arg_acl = argv[3];
+
 			if (strlen(arg_acl) == 0) {
 				arg_acl = "S-1-1-0:R";
+			} else {
+				d_fprintf(stderr, _("arg_acl is not zero, but set arg_acl: S-1-1-0:R\n"));
+				arg_acl = "S-1-1-0:R";
 			}
+
 			if (!strnequal(argv[4], "guest_ok=", 9)) {
 				TALLOC_FREE(ctx);
 				return net_usershare_add_usage(c, argc, argv);
@@ -722,14 +727,18 @@ static int net_usershare_add(struct net_context *c, int argc, const char **argv)
 	}
 
 	/* Disallow shares the same as users. */
+#if 1
 	if (getpwnam(sharename)) {
 		d_fprintf(stderr,
 			_("net usershare add: share name %s is already a valid "
 			  "system user name\n"),
 			sharename );
+		/*
 		TALLOC_FREE(ctx);
 		return -1;
+		*/
 	}
+#endif
 
 	/* Construct the full path for the usershare file. */
 	full_path = get_basepath(ctx);
@@ -859,7 +868,7 @@ static int net_usershare_add(struct net_context *c, int argc, const char **argv)
 		}
 		if (!string_to_sid(&sid, name)) {
 			/* Convert to a SID */
-			NTSTATUS ntstatus = net_lookup_sid_from_name(c, ctx, name, &sid);
+			NTSTATUS ntstatus = net_lookup_sid_from_name(c, ctx, name, &sid); //openthos got error here ! xiaoluoyuan@163.com
 			if (!NT_STATUS_IS_OK(ntstatus)) {
 				d_fprintf(stderr,
 					_("net usershare add: cannot convert "
